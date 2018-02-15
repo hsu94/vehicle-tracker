@@ -41,14 +41,13 @@ def main(vid1):
                 #get all contours in the current frame. Do this every frame
                 contours = findContours(prevFrame, frame)
 
-                #if there are existing objects, update their contours. Do this every frame
-                if framecount%5 == 0:
-                        if len(prevObjs) > 0:
-                                updateObjectContours(prevObjs, contours)
-
 
                 #actually checking for objects that have left        
-                if framecount%25 == 0:
+                if framecount%10 == 0:
+                        #if there are existing objects, update their contours. Do this every frame
+                        if len(prevObjs) > 0:
+                                updateObjectContours(prevObjs, contours)
+                                
                         print("In frame ", framecount)
                         #get current objects in the frame from DNN. Only run when available
                         currentObjs = getObjects(frame, contours)
@@ -100,7 +99,7 @@ def findContours(prevFrame, frame):
         # loop over the contours
         for c in cnts:
                 # if the contour is too small, ignore it
-                if cv2.contourArea(c) < 500:
+                if cv2.contourArea(c) < 1000:
                         continue
 
                 # compute the bounding box for the contour, draw it on the frame,
@@ -143,9 +142,10 @@ def getObjects(frame, contours):
                                 #only add the object if an contour is found for it
                                 ctr = contour
                                 break
-                
-                obj = {"type": item['label'], "contour": ctr}
-                objs.append(obj)
+
+                if ctr != None:
+                        obj = {"type": item['label'], "contour": ctr}
+                        objs.append(obj)
 
 	return objs
 
@@ -170,7 +170,8 @@ def checkMatches(prevObjs, currentObjs):
                                 continue
                         if prevObj['contour'] == None or currentObj['contour'] == None:
                                 continue
-                        if int(prevObj['contour']['xmid']) == int(currentObj['contour']['xmid']) and int(prevObj['contour']['ymid']) == int(currentObj['contour']['ymid']):
+                        #if int(prevObj['contour']['xmid']) == int(currentObj['contour']['xmid']) and int(prevObj['contour']['ymid']) == int(currentObj['contour']['ymid']):
+                        if prevObj['contour'] == currentObj['contour']:
                                 print("match found")
                                 filtered.append(prevObj)
 
