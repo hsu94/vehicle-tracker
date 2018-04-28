@@ -43,7 +43,7 @@ def main(vid1):
 
 
                 #actually checking for objects that have left        
-                if framecount%10 == 0:
+                if framecount%50 == 0:
                         #if there are existing objects, update their contours. Do this every frame
                         if len(prevObjs) > 0:
                                 updateObjectContours(prevObjs, contours)
